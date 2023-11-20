@@ -2,6 +2,8 @@ import turtle
 import time
 
 posponer = 0.05
+creditos = 0
+premio = 0
 #Pantalla (Ventana)
 
 win = turtle.Screen()
@@ -26,7 +28,18 @@ texto.color("red")
 texto.penup()
 texto.hideturtle()
 texto.goto(0, 290)
-texto.write("Créditos: 0   Premio: 0", align = "center", font =("Courier", 18, "normal"))
+texto.write("Créditos: {}   Premio: {}".format(creditos, premio), align = "center", font =("Courier", 18, "normal"))
+
+
+#Leer Teclado
+def setCoins():
+    global creditos
+    creditos =  creditos + 1
+    texto.clear()
+    texto.write("Créditos: {}   Premio: {}".format(creditos, premio), align = "center", font =("Courier", 18, "normal"))
+    
+win.listen()
+win.onkeypress(setCoins, 'c')
 
 
 #Mover
