@@ -1,7 +1,26 @@
 import turtle
 import time
+import random
+import pygame
 
-posponer = 0.05
+# Instalar
+#  pip install pygame
+# Inicializar Pygame y el mixer
+pygame.init()
+pygame.mixer.init()
+# Cargar un archivo de sonido (reemplaza 'sound_file.wav' con tu archivo de sonido)
+pygame.mixer.music.load("sound.mp3")
+# Función para reproducir sonido
+def play_sound():
+    pygame.mixer.music.play()
+
+# Función para detener el sonido
+def stop_sound():
+    pygame.mixer.music.stop()
+
+velocidad = 0.05
+saltos = 0
+
 creditos = 0
 premio = 0
 #Pantalla (Ventana)
@@ -19,7 +38,7 @@ luz.shape("square")
 luz.color("red")
 luz.penup()#Quitar rastro
 luz.goto(0, -250)
-luz.direction = "right"
+luz.direction = "stop"
 
 #Texto
 texto = turtle.Turtle()
@@ -37,9 +56,24 @@ def setCoins():
     creditos =  creditos + 1
     texto.clear()
     texto.write("Créditos: {}   Premio: {}".format(creditos, premio), align = "center", font =("Courier", 18, "normal"))
-    
+
+def setJugar():
+    global creditos
+    global velocidad
+    global saltos
+    if creditos>0:
+        creditos = creditos - 1
+        texto.clear()
+        texto.write("Créditos: {}   Premio: {}".format(creditos, premio), align = "center", font =("Courier", 18, "normal"))
+        luz.direction = "right"
+        saltos = random.randint(96, 128)
+        velocidad = 0.03
+        play_sound()
+
+
 win.listen()
 win.onkeypress(setCoins, 'c')
+win.onkeypress(setJugar, 'j')
 
 
 #Mover
@@ -68,8 +102,21 @@ def mov():
             luz.setx(x + 50)
         else:
             luz.direction = "up"
-            
+def check_saltos():
+    global saltos
+    global velocidad
+    if saltos == 0:
+        luz.direction = "stop"
+        stop_sound()
+    else:
+        saltos = saltos - 1
+        if(saltos%8==0):
+            velocidad = velocidad + 0.01
+
 while True:
+    check_saltos()
     win.update()
-    mov()
-    time.sleep(posponer)
+    mov()    
+    time.sleep(velocidad)
+
+
